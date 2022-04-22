@@ -1,5 +1,5 @@
-import { usersService } from '../../services/v1/index.js';
-import asyncHandler from '../../utils/asyncHandler.js';
+import { usersService } from '../../services/v1';
+import asyncHandler from '../../utils/asyncHandler';
 
 const getUsers = asyncHandler(async (req, res) => {
   const { statusCode, ...data } = await usersService.getUsers(req.query);

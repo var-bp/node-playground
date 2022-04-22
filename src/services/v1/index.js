@@ -1,1 +1,2 @@
-export { default as usersService } from './users.js';
+// eslint-disable-next-line import/prefer-default-export
+export { default as usersService } from './users';

@@ -26,20 +26,26 @@ const USERS = [
 
 const ID_SCHEMA = yup.number().positive().integer().required();
 const GENDER_SCHEMA = yup.string().lowercase().trim().oneOf(['female', 'male']).required();
-const USER_SCHEMA = yup.object().shape({
-  id: ID_SCHEMA,
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  age: yup.number().positive().integer().required(),
-  gender: GENDER_SCHEMA,
-}).required();
-const OPTIONAL_USER_SCHEMA = yup.object().shape({
-  id: yup.number().positive().integer(),
-  name: yup.string(),
-  email: yup.string().email(),
-  age: yup.number().positive().integer(),
-  gender: yup.string().lowercase().trim().oneOf(['female', 'male']),
-}).strict();
+const USER_SCHEMA = yup
+  .object()
+  .shape({
+    id: ID_SCHEMA,
+    name: yup.string().required(),
+    email: yup.string().email().required(),
+    age: yup.number().positive().integer().required(),
+    gender: GENDER_SCHEMA,
+  })
+  .required();
+const OPTIONAL_USER_SCHEMA = yup
+  .object()
+  .shape({
+    id: yup.number().positive().integer(),
+    name: yup.string(),
+    email: yup.string().email(),
+    age: yup.number().positive().integer(),
+    gender: yup.string().lowercase().trim().oneOf(['female', 'male']),
+  })
+  .strict();
 
 const getUsers = async (query) => {
   const response = {
@@ -93,7 +99,10 @@ const createUser = async (body) => {
 
 const updateUser = async (params, body) => {
   const response = {};
-  const [isIdValid, isBodyValid] = await Promise.all([ID_SCHEMA.isValid(params.id), OPTIONAL_USER_SCHEMA.isValid(body)]);
+  const [isIdValid, isBodyValid] = await Promise.all([
+    ID_SCHEMA.isValid(params.id),
+    OPTIONAL_USER_SCHEMA.isValid(body),
+  ]);
   if (!isIdValid || !isBodyValid) {
     response.statusCode = 400;
     response.error = {
