@@ -7,7 +7,7 @@
   "scripts": {
     "lint:js": "eslint . --ext .js",
     "lint:js:fix": "npm run lint:js -- --fix",
-    "start": "node --es-module-specifier-resolution=node index.js"
+    "start:dev": "nodemon --es-module-specifier-resolution=node index.js"
   },
   "dependencies": {
     "dotenv": "16.0.0",
@@ -23,6 +23,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-security": "1.5.0",
+    "nodemon": "2.0.16",
     "prettier": "2.6.2"
   }
 }
