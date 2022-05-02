@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
-import errorFormatter from '../../utils/errorFormatter';
-import removeDuplicate from '../../utils/removeDuplicate';
+import errorFormatter from '../../../utils/errorFormatter';
+import removeDuplicate from '../../../utils/removeDuplicate';
 
 const USERS = [
   {

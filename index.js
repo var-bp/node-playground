@@ -1,9 +1,11 @@
-/* eslint-disable no-console */
+import './src/utils/environmentVariables';
 import express from 'express';
-// import pino from 'pino-http'; // https://github.com/pinojs/pino/blob/master/docs/web.md#pino-with-express
-import usersVersion1 from './src/users/v1/routes';
+import os from 'os';
+import usersApiV1 from './src/api/users/v1/routes';
+import logger from './src/logger';
 
-const PORT = process.env.PORT || 8080;
+// eslint-disable-next-line prefer-destructuring
+const PORT = process.env.PORT;
 
 const app = express();
 
@@ -20,9 +22,7 @@ app.disable('x-powered-by'); // Remove the X-Powered-By headers, security
 app.use(express.json()); // It parses incoming requests with JSON payloads
 app.use(express.urlencoded({ extended: true })); // It parses incoming requests with urlencoded payloads
 
-// app.use(pino());
-
-app.use('/api/v1', usersVersion1);
+app.use('/api/v1', usersApiV1);
 
 // Send back a 404 error for any unknown api request
 app.use((req, res) => {
@@ -35,17 +35,30 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.info(`Server started on http://localhost:${PORT}/`);
+  logger.info(`Server started`);
 });
 
 process.on('uncaughtException', (err) => {
-  // maybe restart here
-  // logger here
-  console.error(`Uncaught expection: ${err.message}`);
+  logger.fatal(err);
+  process.exit(1);
 });
 
 process.on('unhandledRejection', (err) => {
-  // maybe restart here
-  // logger here
-  console.error(`Unhandled rejection: ${err.message}`);
+  logger.fatal(err);
+  process.exit(1);
 });
+
+// https://stackoverflow.com/a/70644079
+if (os.platform() === 'win32') {
+  process.on('SIGINT', () => {
+    app.close(() => {
+      logger.info('Shutting down the server');
+    });
+  });
+} else {
+  process.on('SIGTERM', () => {
+    app.close(() => {
+      logger.info('Shutting down the server');
+    });
+  });
+}
