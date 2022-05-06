@@ -2,6 +2,7 @@ import './src/utils/environmentVariables';
 import express from 'express';
 import os from 'os';
 import usersApiV1 from './src/api/users/v1/routes';
+import docsApiV1 from './src/api/docs/v1/routes';
 import logger from './src/logger';
 
 // eslint-disable-next-line prefer-destructuring
@@ -22,6 +23,7 @@ app.disable('x-powered-by'); // Remove the X-Powered-By headers, security
 app.use(express.json()); // It parses incoming requests with JSON payloads
 app.use(express.urlencoded({ extended: true })); // It parses incoming requests with urlencoded payloads
 
+app.use('/api/v1', docsApiV1);
 app.use('/api/v1', usersApiV1);
 
 // Send back a 404 error for any unknown api request

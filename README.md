@@ -43,37 +43,23 @@ Most common log levels (INFO, WARN, ERROR, FATAL - production; DEBUG, TRACE - de
 
 Should the endpoint name be singular or plural? The keep-it-simple rule applies here. Although your inner-grammatician will tell you it's wrong to describe a single instance of a resource using a plural, the pragmatic answer is to keep the URL format consistent and always use a plural. Not having to deal with odd pluralization (person/people, goose/geese) makes the life of the API consumer better and is easier for the API provider to implement (as most modern frameworks will natively handle /tickets and /tickets/12 under a common controller).
 
-Error handling practices:
+Make your code production-ready:\
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/documentingusingswagger.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/monitoring.md
-
-Don't block the event loop:\
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/performance/block-loop.md
-
-Delegate anything possible (e.g. static content, gzip) to a reverse proxy:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md
-
-Guard and restart your process upon failure (PM2):\
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/guardprocess.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/utilizecpu.md
-
-Create a maintenance endpoint:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/createmaintenanceendpoint.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/measurememory.md
-
-Make your code production-ready:\
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/productioncode.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/frontendout.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/bestateless.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/assigntransactionid.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/setnodeenv.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/logrouting.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/installpackageswithnpmci.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/hideerrors.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/avoid_publishing_secrets.md
+
+Delegate anything possible (e.g. static content, gzip) to a reverse proxy:\
+https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md
 
 Security:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/detectvulnerabilities.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/limitrequests.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/ormodmusage.md
 https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/commonsecuritybestpractices.md
