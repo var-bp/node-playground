@@ -4,6 +4,7 @@ import os from 'os';
 import usersApiV1 from './src/api/users/v1/routes';
 import docsApiV1 from './src/api/docs/v1/routes';
 import logger from './src/logger';
+import pool from './src/db';
 
 // eslint-disable-next-line prefer-destructuring
 const PORT = process.env.PORT;
@@ -40,25 +41,30 @@ app.listen(PORT, () => {
   logger.info(`Server started`);
 });
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', async (err) => {
   logger.fatal(err);
+  await pool.end();
   process.exit(1);
 });
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', async (err) => {
   logger.fatal(err);
+  await pool.end();
   process.exit(1);
 });
 
+// https://github.com/porsager/postgres#teardown--cleanup
 // https://stackoverflow.com/a/70644079
 if (os.platform() === 'win32') {
-  process.on('SIGINT', () => {
+  process.on('SIGINT', async () => {
+    await pool.end();
     app.close(() => {
       logger.info('Shutting down the server');
     });
   });
 } else {
-  process.on('SIGTERM', () => {
+  process.on('SIGTERM', async () => {
+    await pool.end();
     app.close(() => {
       logger.info('Shutting down the server');
     });

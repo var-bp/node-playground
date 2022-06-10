@@ -1,40 +1,30 @@
 import { validationResult } from 'express-validator';
 import errorFormatter from '../../../utils/errorFormatter';
 import removeDuplicate from '../../../utils/removeDuplicate';
-
-const USERS = [
-  {
-    id: 1,
-    name: 'James',
-    email: 'james@gmail.com',
-    age: 30,
-    gender: 'male',
-  },
-  {
-    id: 2,
-    name: 'Mary',
-    email: 'mary@gmail.com',
-    age: 18,
-    gender: 'female',
-  },
-  // {
-  //   id: 3,
-  //   name: 'Patricia',
-  //   email: 'patricia@gmail.com',
-  //   age: 20,
-  //   gender: 'female',
-  // }
-];
+import pool from '../../../db';
+import logger from '../../../logger';
 
 const getUsers = async (req) => {
   const response = {
     statusCode: 200,
   };
-  const errors = validationResult(req);
-  if (errors.isEmpty() && req.query.gender) {
-    response.data = USERS.filter((item) => item.gender === req.query.gender);
-  } else {
-    response.data = USERS;
+  const validationErrors = validationResult(req);
+  const client = await pool.connect();
+  try {
+    if (validationErrors.isEmpty() && req.query.gender) {
+      response.data = await client.query('SELECT * FROM "user" WHERE gender = $1', [req.query.gender]);
+    } else {
+      response.data = await client.query('SELECT * FROM "user"');
+    }
+  } catch (error) {
+    logger.error(error);
+    response.statusCode = 500;
+    response.error = {
+      code: 500,
+      message: 'Internal server error',
+    };
+  } finally {
+    client.release();
   }
   return response;
 };
@@ -45,7 +35,19 @@ const getUser = async (req) => {
   };
   const errors = validationResult(req).formatWith(errorFormatter);
   if (errors.isEmpty()) {
-    response.data = USERS.filter((item) => item.id === req.params.id);
+    const client = await pool.connect();
+    try {
+      response.data = await client.query('SELECT * FROM "user" WHERE id = $1', [req.params.id]);
+    } catch (error) {
+      logger.error(error);
+      response.statusCode = 500;
+      response.error = {
+        code: 500,
+        message: 'Internal server error',
+      };
+    } finally {
+      client.release();
+    }
   } else {
     response.statusCode = 400;
     response.error = {
@@ -65,16 +67,38 @@ const createUser = async (req) => {
       code: 400,
       message: removeDuplicate(errors.array()),
     };
-  } else if (USERS.findIndex((item) => item.id === req.body.id) !== -1) {
-    response.statusCode = 422;
-    response.error = {
-      code: 422,
-      message: 'Duplicated data',
-    };
   } else {
-    USERS.push(req.body);
-    response.statusCode = 201;
-    response.data = req.body;
+    const client = await pool.connect();
+    try {
+      const found = await client.query('SELECT EXISTS (SELECT 1 FROM "user" WHERE email = $1) AS "exists"', [
+        req.body.email,
+      ]);
+      if (found.rows[0].exists) {
+        response.statusCode = 422;
+        response.error = {
+          code: 422,
+          message: 'Duplicated data',
+        };
+      } else {
+        await client.query('INSERT INTO "user" (first_name, email, age, gender) VALUES ($1, $2, $3, $4)', [
+          req.body.first_name,
+          req.body.email,
+          req.body.age,
+          req.body.gender,
+        ]);
+        response.statusCode = 201;
+        response.data = req.body;
+      }
+    } catch (error) {
+      logger.error(error);
+      response.statusCode = 500;
+      response.error = {
+        code: 500,
+        message: 'Internal server error',
+      };
+    } finally {
+      client.release();
+    }
   }
   return response;
 };
@@ -89,19 +113,36 @@ const updateUser = async (req) => {
       message: removeDuplicate(errors.array()),
     };
   } else {
-    const index = USERS.findIndex((item) => item.id === req.params.id);
-    if (index !== -1) {
-      // eslint-disable-next-line security/detect-object-injection
-      const obj = { ...USERS[index], ...req.body };
-      USERS.splice(index, 0, obj);
-      response.statusCode = 200;
-      response.data = obj;
-    } else {
-      response.statusCode = 404;
+    const client = await pool.connect();
+    try {
+      const found = await client.query('SELECT EXISTS (SELECT 1 FROM "user" WHERE id = $1) AS "exists"', [
+        req.params.id,
+      ]);
+      if (found.rows[0].exists) {
+        await client.query('INSERT INTO "user" (first_name, email, age, gender) VALUES ($1, $2, $3, $4)', [
+          req.body.first_name,
+          req.body.email,
+          req.body.age,
+          req.body.gender,
+        ]);
+        response.statusCode = 200;
+        response.data = req.body;
+      } else {
+        response.statusCode = 404;
+        response.error = {
+          code: 404,
+          message: 'Data not found',
+        };
+      }
+    } catch (error) {
+      logger.error(error);
+      response.statusCode = 500;
       response.error = {
-        code: 404,
-        message: 'Data not found',
+        code: 500,
+        message: 'Internal server error',
       };
+    } finally {
+      client.release();
     }
   }
   return response;
@@ -119,17 +160,31 @@ const deleteUser = async (req) => {
       message: removeDuplicate(errors.array()),
     };
   } else {
-    const index = USERS.findIndex((item) => item.id === req.params.id);
-    if (index !== -1) {
-      USERS.splice(index, 1);
-      response.statusCode = 200;
-      response.data = { deleted: req.params.id };
-    } else {
-      response.statusCode = 404;
+    const client = await pool.connect();
+    try {
+      const found = await client.query('SELECT EXISTS (SELECT 1 FROM "user" WHERE id = $1) AS "exists"', [
+        req.params.id,
+      ]);
+      if (found.rows[0].exists) {
+        await client.query('DELETE FROM "user" WHERE id = $1', [req.params.id]);
+        response.statusCode = 200;
+        response.data = { deleted: req.params.id };
+      } else {
+        response.statusCode = 404;
+        response.error = {
+          code: 404,
+          message: 'Data not found',
+        };
+      }
+    } catch (error) {
+      logger.error(error);
+      response.statusCode = 500;
       response.error = {
-        code: 404,
-        message: 'Data not found',
+        code: 500,
+        message: 'Internal server error',
       };
+    } finally {
+      client.release();
     }
   }
   return response;

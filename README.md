@@ -30,6 +30,10 @@ https://stackoverflow.com/a/14538774\
 https://stackoverflow.com/a/23708903
 
 https://www.moesif.com/blog/technical/api-design/Which-HTTP-Status-Code-To-Use-For-Every-CRUD-App/
+https://metamug.com/article/status-codes-for-rest-api.html
+
+https://blog.logrocket.com/why-you-should-avoid-orms-with-examples-in-node-js-e0baab73fa5/
+https://gist.github.com/NigelEarle/70db130cc040cc2868555b29a0278261
 
 Never trust user input. Assume that every route will be broken in some way.
 
