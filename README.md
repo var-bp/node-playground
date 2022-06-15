@@ -47,34 +47,15 @@ Most common log levels (INFO, WARN, ERROR, FATAL - production; DEBUG, TRACE - de
 
 Should the endpoint name be singular or plural? The keep-it-simple rule applies here. Although your inner-grammatician will tell you it's wrong to describe a single instance of a resource using a plural, the pragmatic answer is to keep the URL format consistent and always use a plural. Not having to deal with odd pluralization (person/people, goose/geese) makes the life of the API consumer better and is easier for the API provider to implement (as most modern frameworks will natively handle /tickets and /tickets/12 under a common controller).
 
-Make your code production-ready:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/documentingusingswagger.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/monitoring.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/performance/block-loop.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/guardprocess.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/utilizecpu.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/measurememory.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/productioncode.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/frontendout.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/bestateless.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/assigntransactionid.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/logrouting.md
+Node.js Best Practices:\
+https://github.com/goldbergyoni/nodebestpractices
 
-Delegate anything possible (e.g. static content, gzip) to a reverse proxy:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md
+What's the best way of managing user authentication and sessions on nodejs?:\
+https://stackoverflow.com/a/71522970
 
-Security:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/limitrequests.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/ormodmusage.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/commonsecuritybestpractices.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/secureheaders.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/userpasswords.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/expirejwt.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/login-rate-limit.md (NGINX)
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/requestpayloadsizelimit.md (NGINX)
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/regex.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/sandbox.md
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/sessions.md
+Authentication vs Authorization:\
+https://stackoverflow.com/a/36495063
 
-Docker:\
-https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/security/non-root-user.md
+JWT vs Sessions:\
+https://www.reddit.com/r/node/comments/giaogw/jwt_vs_sessions/
+https://www.reddit.com/r/programming/comments/nag1cu/jwt_should_not_be_your_default_for_sessions/
